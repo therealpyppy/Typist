@@ -85,14 +85,14 @@ local function showWords()
 			local pos = data.targetPosition
 
 			local adjustedPos = UDim2.new(
-				pos.X.Scale + offset, pos.X.Offset,
-				pos.Y.Scale, pos.Y.Offset
-			)
+			pos.X.Scale + offset, pos.X.Offset,
+			pos.Y.Scale, pos.Y.Offset
+		)
 
-			move(frame, adjustedPos)
-		end
+		move(frame, adjustedPos)
 	end
-	currentMode = "words"
+end
+currentMode = "words"
 end
 
 showWords()
