@@ -1,4 +1,5 @@
 local player = game.Players.LocalPlayer
+local ts = game:GetService("TweenService")
 local playerGui = player:WaitForChild("PlayerGui"):WaitForChild("gui"):WaitForChild("main")
 
 local guiAnimator = require(script.Parent.guiAnimator)
@@ -7,6 +8,13 @@ local mode = playerGui:WaitForChild("mode")
 local puncAndNum = playerGui:WaitForChild("puncAndNum")
 local quoteLength = playerGui:WaitForChild("quoteLength")
 local wordTime = playerGui:WaitForChild("wordTime")
+
+local function tweenOut(frame, targetPosition)
+	local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+	local tween = ts:Create(frame, tweenInfo, { Position = targetPosition })
+	tween:Play()
+end
 
 local function showWords()
 	local ogTweenPos = guiAnimator.show({"left", puncAndNum}, {"right", wordTime})
@@ -58,7 +66,7 @@ local function showWords()
 			pos.Y.Scale, pos.Y.Offset
 		)
 
-		-- TODO: tweenOut(frame, adjustedPos)
+		tweenOut(frame, adjustedPos)
 	end
 end
 
