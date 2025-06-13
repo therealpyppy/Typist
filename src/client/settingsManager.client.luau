@@ -9,19 +9,16 @@ local puncAndNum = playerGui:WaitForChild("puncAndNum")
 local quoteLength = playerGui:WaitForChild("quoteLength")
 local wordTime = playerGui:WaitForChild("wordTime")
 
-local currentMode = "time" -- TODO: Store user data to save what mode the use on start
+local currentMode = "time" -- TODO: Store user data to save what mode the user had on start
 local launch = true
 
-local function move(frame, targetPosition)
-	local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
-	local tween = ts:Create(frame, tweenInfo, { Position = targetPosition })
-	tween:Play()
+local function move(frame, targetPosition)
+	ts:Create(frame, tweenInfo, { Position = targetPosition }):Play()
 end
 
 local function fade(object, transparency)
-	local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-
 	local tween = ts:Create(object, tweenInfo, { TextTransparency = transparency })
 	tween:Play()
 	return tween
@@ -33,7 +30,7 @@ local function showWords()
 		fade(wordTime.time2, 1)
 		fade(wordTime.time3, 1)
 		local tween = fade(wordTime.time4, 1)
-		tween.Completed:Connect(function(playbackState)
+		tween.Completed:Connect(function()
 			fade(wordTime.word1, 0)
 			fade(wordTime.word2, 0)
 			fade(wordTime.word3, 0)
@@ -41,58 +38,38 @@ local function showWords()
 		end)
 	else
 		local ogTweenPos = guiAnimator.show({"left", puncAndNum}, {"right", wordTime})
-
-		local frameData = {
-			{
-				frame = mode,
-				targetPosition = mode.Position
-			}
-		}
+		local frameData = { { frame = mode, targetPosition = mode.Position } }
 
 		for _, data in ipairs(ogTweenPos) do
 			table.insert(frameData, data)
 		end
 
-		local leftmost = math.huge
-		local rightmost = -math.huge
+		local leftmost, rightmost = math.huge, -math.huge
 
 		for _, data in ipairs(frameData) do
 			local frame = data.frame
-			local pos = data.targetPosition
-			local size = frame.Size
+			local pos, size = data.targetPosition, frame.Size
 
 			frame.AnchorPoint = Vector2.new(0.5, frame.AnchorPoint.Y)
 
 			local center = pos.X.Scale
 			local halfWidth = size.X.Scale / 2
+			local leftEdge, rightEdge = center - halfWidth, center + halfWidth
 
-			local leftEdge = center - halfWidth
-			local rightEdge = center + halfWidth
-
-			if leftEdge < leftmost then
-				leftmost = leftEdge
-			end
-			if rightEdge > rightmost then
-				rightmost = rightEdge
-			end
+			leftmost = math.min(leftmost, leftEdge)
+			rightmost = math.max(rightmost, rightEdge)
 		end
 
-		local groupCenter = (leftmost + rightmost) / 2
-		local offset = 0.5 - groupCenter
+		local offset = 0.5 - (leftmost + rightmost) / 2
 
 		for _, data in ipairs(frameData) do
-			local frame = data.frame
 			local pos = data.targetPosition
-
-			local adjustedPos = UDim2.new(
-			pos.X.Scale + offset, pos.X.Offset,
-			pos.Y.Scale, pos.Y.Offset
-		)
-
-		move(frame, adjustedPos)
+			local adjustedPos = UDim2.new(pos.X.Scale + offset, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
+			move(data.frame, adjustedPos)
+		end
 	end
-end
-currentMode = "words"
+
+	currentMode = "words"
 end
 
 showWords()
