@@ -25,7 +25,13 @@ local function fade(object, transparency)
 end
 
 local function showWords()
-	if currentMode == "time" and not launch then
+	if launch or currentMode == "zen" then
+		local ogTweenPos = guiAnimator.show({"left", puncAndNum}, {"right", wordTime})
+
+		for _, data in ogTweenPos do
+			move(data[0], data[1])
+		end
+	elseif currentMode == "time" then
 		fade(wordTime.time1, 1)
 		fade(wordTime.time2, 1)
 		fade(wordTime.time3, 1)
@@ -36,39 +42,11 @@ local function showWords()
 			fade(wordTime.word3, 0)
 			fade(wordTime.word4, 0)
 		end)
-	else
-		local ogTweenPos = guiAnimator.show({"left", puncAndNum}, {"right", wordTime})
-		local frameData = { { frame = mode, targetPosition = mode.Position } }
-
-		for _, data in ipairs(ogTweenPos) do
-			table.insert(frameData, data)
-		end
-
-		local leftmost, rightmost = math.huge, -math.huge
-
-		for _, data in ipairs(frameData) do
-			local frame = data.frame
-			local pos, size = data.targetPosition, frame.Size
-
-			frame.AnchorPoint = Vector2.new(0.5, frame.AnchorPoint.Y)
-
-			local center = pos.X.Scale
-			local halfWidth = size.X.Scale / 2
-			local leftEdge, rightEdge = center - halfWidth, center + halfWidth
-
-			leftmost = math.min(leftmost, leftEdge)
-			rightmost = math.max(rightmost, rightEdge)
-		end
-
-		local offset = 0.5 - (leftmost + rightmost) / 2
-
-		for _, data in ipairs(frameData) do
-			local pos = data.targetPosition
-			local adjustedPos = UDim2.new(pos.X.Scale + offset, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
-			move(data.frame, adjustedPos)
-		end
+	elseif currentMode == "quote" then
+		-- Tweenout puncAndNum while tweening in quoteLength
+		-- Then moveout wordTime
+		-- and if the boxes for time are visible fade therm out and fade in word
 	end
-
 	currentMode = "words"
 end
 
