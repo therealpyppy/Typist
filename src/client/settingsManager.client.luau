@@ -120,7 +120,7 @@ local function switchMode(newMode)
 				task.delay(0.3, function()
 					wordTime.Visible = false
 					puncAndNum.Visible = false
-					showWordsMode()
+					showQuoteMode()
 				end)
 			end
 		else
@@ -152,5 +152,38 @@ local function switchMode(newMode)
 	currentMode = newMode
 end
 
-task.wait(5)
-switchMode("zen")
+local function fadeColor(object, color)
+	local tween = ts:Create(object, tweenInfo, { TextColor3 = color })
+	tween:Play()
+	return tween
+end
+
+local selected = mode.time1
+
+mode.time1.MouseButton1Click:Connect(function()
+	fadeColor(selected, Color3.fromHex("#535553"))
+	fadeColor(mode.time1, Color3.fromHex("#e2b714"))
+	selected = mode.time1
+	switchMode("time")
+end)
+
+mode.words.MouseButton1Click:Connect(function()
+	fadeColor(selected, Color3.fromHex("#535553"))
+	fadeColor(mode.words, Color3.fromHex("#e2b714"))
+	selected = mode.words
+	switchMode("words")
+end)
+
+mode.quote.MouseButton1Click:Connect(function()
+	fadeColor(selected, Color3.fromHex("#535553"))
+	fadeColor(mode.quote, Color3.fromHex("#e2b714"))
+	selected = mode.quote
+	switchMode("quote")
+end)
+
+mode.zen.MouseButton1Click:Connect(function()
+	fadeColor(selected, Color3.fromHex("#535553"))
+	fadeColor(mode.zen, Color3.fromHex("#e2b714"))
+	selected = mode.zen
+	switchMode("zen")
+end)
