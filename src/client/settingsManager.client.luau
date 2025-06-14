@@ -9,7 +9,7 @@ local puncAndNum = playerGui:WaitForChild("puncAndNum")
 local quoteLength = playerGui:WaitForChild("quoteLength")
 local wordTime = playerGui:WaitForChild("wordTime")
 
-local currentMode = "quote" -- TODO: Store user data to save what mode the user had on start
+local currentMode = "time" -- TODO: Store user data to save what mode the user had on start
 local launch = false
 
 local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
@@ -35,56 +35,122 @@ local function fade(object, transparency)
 	return tween
 end
 
-local function showWords()
-	if launch or currentMode == "zen" then
-		local ogTweenPos = guiAnimator.show({"left", puncAndNum}, {"right", wordTime})
-		puncAndNum.Visible = true
-		wordTime.Visible = true
-		for _, data in ogTweenPos do
-			move(data.frame, data.targetPosition)
-		end
-	elseif currentMode == "time" then
-		local tweens = {
-			fade(wordTime.time1, 1),
-			fade(wordTime.time2, 1),
-			fade(wordTime.time3, 1),
-			fade(wordTime.time4, 1)
-		}
-		tweens[#tweens].Completed:Connect(function()
-			fade(wordTime.word1, 0)
-			fade(wordTime.word2, 0)
-			fade(wordTime.word3, 0)
-			fade(wordTime.word4, 0)
-		end)
-	elseif currentMode == "quote" then
-		local hideTweenData = guiAnimator.hide({"right", quoteLength})
+local function fadeGroup(elements, transparency)
+	for _, el in ipairs(elements) do
+		fade(el, transparency)
+	end
+end
 
-		move(hideTweenData[1].frame, hideTweenData[1].targetPosition)
-		move(hideTweenData[2].frame, hideTweenData[2].targetPosition).Completed:Connect(function(playbackState)
-			local moveOutWordTime = guiAnimator.show({"right", wordTime}, {"left", puncAndNum})
-			for _, data in moveOutWordTime do
-				move(data.frame, data.targetPosition)
-				quoteLength.Visible = false
-			end
+local function showQuoteMode()
+	local moveIn = guiAnimator.show({"right", quoteLength})
+	quoteLength.Visible = true
+	for _, data in moveIn do
+		move(data.frame, data.targetPosition)
+	end
 
-			if wordTime.time1.TextTransparency ~= 1 then
-				local tweens = {
-					fade(wordTime.time1, 1),
-					fade(wordTime.time2, 1),
-					fade(wordTime.time3, 1),
-					fade(wordTime.time4, 1),
-				}
+	local moveOut = guiAnimator.hide({"left", puncAndNum}, {"right", wordTime})
+	for _, data in moveOut do
+		move(data.frame, data.targetPosition)
+	end
+	puncAndNum.Visible = false
+	wordTime.Visible = false
+end
 
-				tweens[#tweens].Completed:Connect(function()
-					fade(wordTime.word1, 0)
-					fade(wordTime.word2, 0)
-					fade(wordTime.word3, 0)
-					fade(wordTime.word4, 0)
-				end)
-			end
+local function showTimeMode()
+	local moveIn = guiAnimator.show({"left", puncAndNum}, {"right", wordTime})
+	puncAndNum.Visible = true
+	wordTime.Visible = true
+
+	for _, data in moveIn do
+		move(data.frame, data.targetPosition)
+	end
+
+	if wordTime.word1.TextTransparency ~= 0 then
+		fadeGroup({wordTime.word1, wordTime.word2, wordTime.word3, wordTime.word4}, 0)
+		task.delay(0.3, function()
+			fadeGroup({wordTime.time1, wordTime.time2, wordTime.time3, wordTime.time4}, 1)
 		end)
 	end
-	currentMode = "words"
 end
+
+local function showZenMode()
+	local hideAll = guiAnimator.hide({"left", puncAndNum}, {"right", wordTime}, {"right", quoteLength})
+	for _, data in hideAll do
+		move(data.frame, data.targetPosition)
+	end
+	task.delay(0.3, function()
+		puncAndNum.Visible = false
+		wordTime.Visible = false
+		quoteLength.Visible = false
+	end)
+end
+
+local function showWordsMode()
+	puncAndNum.Visible = true
+	wordTime.Visible = true
+
+	local moveIn = guiAnimator.show({"left", puncAndNum}, {"right", wordTime})
+	for _, data in moveIn do
+		move(data.frame, data.targetPosition)
+	end
+
+	if wordTime.time1.TextTransparency ~= 0 then
+		fadeGroup({wordTime.time1, wordTime.time2, wordTime.time3, wordTime.time4}, 0)
+		task.delay(0.3, function()
+			fadeGroup({wordTime.word1, wordTime.word2, wordTime.word3, wordTime.word4}, 1)
+		end)
+	end
+end
+
+local function hideQuote()
+	local moveOut = guiAnimator.hide({"right", quoteLength})
+	for _, data in moveOut do
+		move(data.frame, data.targetPosition)
+	end
+end
+
+local function switchMode(newMode)
+	if currentMode == newMode then return end
+
+	if newMode == "quote" then
+		if currentMode == "words" then
+			local moveOut = guiAnimator.hide({"right", wordTime}, {"right", puncAndNum})
+			for _, data in moveOut do
+				move(data.frame, data.targetPosition)
+				task.delay(0.3, function()
+					wordTime.Visible = false
+					puncAndNum.Visible = false
+					showWordsMode()
+				end)
+			end
+		else
+			showQuoteMode()
+		end
+	elseif newMode == "time" then
+		if currentMode == "quote" then
+			hideQuote()
+			task.delay(0.3, function()
+				quoteLength.Visible = false
+				showTimeMode()
+			end)
+		else
+			showTimeMode()
+		end
+	elseif newMode == "zen" then
+		showZenMode()
+	elseif newMode == "words" then
+		if currentMode == "quote" then
+			hideQuote()
+			task.delay(0.3, function()
+				quoteLength.Visible = false
+				showWordsMode()
+			end)
+		else
+			showWordsMode()
+		end
+	end
+	currentMode = newMode
+end
+
 task.wait(5)
-showWords()
+switchMode("zen")
