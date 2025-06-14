@@ -27,16 +27,16 @@ local function fade(object, transparency)
 	end
 	local tween = ts:Create(object, tweenInfo2, { TextTransparency = transparency })
 	tween:Play()
-	tween.Completed:Connect(function()
-		if transparency == 1 then
+	if transparency == 1 then
+		tween.Completed:Connect(function()
 			object.Visible = false
-		end
-	end)
+		end)
+	end
 	return tween
 end
 
 local function fadeGroup(elements, transparency)
-	for _, el in ipairs(elements) do
+	for _, el in elements do
 		fade(el, transparency)
 	end
 end
@@ -65,10 +65,10 @@ local function showTimeMode()
 		move(data.frame, data.targetPosition)
 	end
 
-	if wordTime.word1.TextTransparency ~= 0 then
-		fadeGroup({wordTime.word1, wordTime.word2, wordTime.word3, wordTime.word4}, 0)
+	if wordTime.word1.TextTransparency ~= 1 then
+		fadeGroup({wordTime.word1, wordTime.word2, wordTime.word3, wordTime.word4}, 1)
 		task.delay(0.3, function()
-			fadeGroup({wordTime.time1, wordTime.time2, wordTime.time3, wordTime.time4}, 1)
+			fadeGroup({wordTime.time1, wordTime.time2, wordTime.time3, wordTime.time4}, 0)
 		end)
 	end
 end
@@ -94,10 +94,10 @@ local function showWordsMode()
 		move(data.frame, data.targetPosition)
 	end
 
-	if wordTime.time1.TextTransparency ~= 0 then
-		fadeGroup({wordTime.time1, wordTime.time2, wordTime.time3, wordTime.time4}, 0)
+	if wordTime.time1.TextTransparency ~= 1 then
+		fadeGroup({wordTime.time1, wordTime.time2, wordTime.time3, wordTime.time4}, 1)
 		task.delay(0.3, function()
-			fadeGroup({wordTime.word1, wordTime.word2, wordTime.word3, wordTime.word4}, 1)
+			fadeGroup({wordTime.word1, wordTime.word2, wordTime.word3, wordTime.word4}, 0)
 		end)
 	end
 end
