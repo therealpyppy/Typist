@@ -82,9 +82,9 @@ function guiAnimator.hide(...)
 
 	for _, pair in ipairs(args) do
 		local side, frame = pair[1], pair[2]
-		local targetX, endX = computeFramePosition(side, frame)
+		local targetX, startX = computeFramePosition(side, frame)
 
-		frame.Position = UDim2.new(targetX, 0, frame.Position.Y.Scale, 0)
+		frame.Position = UDim2.new(startX, 0, frame.Position.Y.Scale, 0)
 		frame.Visible = true
 
 		if side == "left" then
@@ -93,7 +93,7 @@ function guiAnimator.hide(...)
 			mode.UICornerOverlayR.Visible = false
 		end
 
-		local targetPosition = UDim2.new(endX, 0, frame.Position.Y.Scale, 0)
+		local targetPosition = UDim2.new(targetX, 0, frame.Position.Y.Scale, 0)
 		table.insert(frameData, { frame = frame, targetPosition = targetPosition })
 	end
 
