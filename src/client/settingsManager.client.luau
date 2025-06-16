@@ -47,13 +47,6 @@ local function showQuoteMode()
 	for _, data in moveIn do
 		move(data.frame, data.targetPosition)
 	end
-
-	local moveOut = guiAnimator.hide({"left", puncAndNum}, {"right", wordTime})
-	for _, data in moveOut do
-		move(data.frame, data.targetPosition)
-	end
-	puncAndNum.Visible = false
-	wordTime.Visible = false
 end
 
 local function showTimeMode()
@@ -74,7 +67,12 @@ local function showTimeMode()
 end
 
 local function showZenMode()
-	local hideAll = guiAnimator.hide({"left", puncAndNum}, {"right", wordTime}, {"right", quoteLength})
+	local hideAll
+	if currentMode == "quote" then
+		hideAll = guiAnimator.hide({"right", quoteLength})
+	else
+		hideAll = guiAnimator.hide({"left", puncAndNum}, {"right", wordTime})
+	end
 	for _, data in hideAll do
 		move(data.frame, data.targetPosition)
 	end
@@ -111,25 +109,31 @@ end
 
 local function switchMode(newMode)
 	if currentMode == newMode then return end
-
 	if newMode == "quote" then
-		if currentMode == "words" then
-			local moveOut = guiAnimator.hide({"right", wordTime}, {"right", puncAndNum})
-			for _, data in moveOut do
-				move(data.frame, data.targetPosition)
-				task.delay(0.3, function()
-					wordTime.Visible = false
-					puncAndNum.Visible = false
-					showQuoteMode()
-				end)
-			end
+		if currentMode == "words" or currentMode == "time" then
+			showZenMode()
+			task.delay(0.5, function()
+				wordTime.Visible = false
+				puncAndNum.Visible = false
+				showQuoteMode()
+			end)
 		else
 			showQuoteMode()
 		end
 	elseif newMode == "time" then
+		if currentMode == "words" then
+			if wordTime.word1.TextTransparency ~= 1 then
+				fadeGroup({wordTime.word1, wordTime.word2, wordTime.word3, wordTime.word4}, 1)
+				task.delay(0.3, function()
+					fadeGroup({wordTime.time1, wordTime.time2, wordTime.time3, wordTime.time4}, 0)
+				end)
+			end
+			currentMode = newMode
+			return
+		end
 		if currentMode == "quote" then
 			hideQuote()
-			task.delay(0.3, function()
+			task.delay(0.5, function()
 				quoteLength.Visible = false
 				showTimeMode()
 			end)
@@ -139,9 +143,19 @@ local function switchMode(newMode)
 	elseif newMode == "zen" then
 		showZenMode()
 	elseif newMode == "words" then
+		if currentMode == "time" then
+			if wordTime.time1.TextTransparency ~= 1 then
+				fadeGroup({wordTime.time1, wordTime.time2, wordTime.time3, wordTime.time4}, 1)
+				task.delay(0.3, function()
+					fadeGroup({wordTime.word1, wordTime.word2, wordTime.word3, wordTime.word4}, 0)
+				end)
+			end
+			currentMode = newMode
+			return
+		end
 		if currentMode == "quote" then
 			hideQuote()
-			task.delay(0.3, function()
+			task.delay(0.5, function()
 				quoteLength.Visible = false
 				showWordsMode()
 			end)
@@ -158,7 +172,7 @@ local function fadeColor(object, color)
 	return tween
 end
 
-local selected = mode.time1
+local selected = mode.time1 -- TODO: ln 12
 
 mode.time1.MouseButton1Click:Connect(function()
 	fadeColor(selected, Color3.fromHex("#535553"))
