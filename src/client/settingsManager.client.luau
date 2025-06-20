@@ -222,15 +222,21 @@ quoteLength.all.MouseButton1Click:Connect(function()
 	
 end)
 
+local function find(tbl: table, field: string, value: string | TextButton)
+	for i, v in tbl do
+		if v[field] == value then
+			return i
+		end
+	end
+	return nil
+end
+
 quoteLength.short.MouseButton1Click:Connect(function()
 	local shiftPressed = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
 	local uiE = quoteLength.short
 
 	if shiftPressed then
-		local find = table.find(quoteLengths, {
-			value = "short",
-			uiElement = uiE
-		}, 1)
+		local find = find(quoteLengths, "uiElement", uiE)
 		if find then
 			table.remove(quoteLengths, find)
 			fadeColor(uiE, Color3.fromHex("#535553"))
@@ -259,10 +265,7 @@ quoteLength.medium.MouseButton1Click:Connect(function()
 	local uiE = quoteLength.medium
 
 	if shiftPressed then
-		local find = table.find(quoteLengths, {
-			value = "medium",
-			uiElement = uiE
-		}, 1)
+		local find = find(quoteLengths, "uiElement", uiE)
 		if find then
 			table.remove(quoteLengths, find)
 			fadeColor(uiE, Color3.fromHex("#535553"))
@@ -291,10 +294,7 @@ quoteLength.long.MouseButton1Click:Connect(function()
 	local uiE = quoteLength.long
 
 	if shiftPressed then
-		local find = table.find(quoteLengths, {
-			value = "long",
-			uiElement = uiE
-		}, 1)
+		local find = find(quoteLengths, "uiElement", uiE)
 		if find then
 			table.remove(quoteLengths, find)
 			fadeColor(uiE, Color3.fromHex("#535553"))
@@ -323,10 +323,7 @@ quoteLength.thicc.MouseButton1Click:Connect(function()
 	local uiE = quoteLength.thicc
 
 	if shiftPressed then
-		local find = table.find(quoteLengths, {
-			value = "thicc",
-			uiElement = uiE
-		}, 1)
+		local find = find(quoteLengths, "uiElement", uiE)
 		if find then
 			table.remove(quoteLengths, find)
 			fadeColor(uiE, Color3.fromHex("#535553"))
