@@ -1,5 +1,6 @@
 local player = game.Players.LocalPlayer
 local ts = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 local playerGui = player:WaitForChild("PlayerGui"):WaitForChild("gui"):WaitForChild("main")
 
 local guiAnimator = require(script.Parent.guiAnimator)
@@ -206,3 +207,153 @@ mode.zen.MouseButton1Click:Connect(function()
 	selected = mode.zen
 	switchMode("zen")
 end)
+
+local punctuationToggle = false
+puncAndNum.punctuation.MouseButton1Click:Connect(function()
+	
+end)
+
+local numbersToggle = false
+puncAndNum.numbers.MouseButton1Click:Connect(function()
+	
+end)
+
+quoteLength.all.MouseButton1Click:Connect(function()
+	
+end)
+
+quoteLength.short.MouseButton1Click:Connect(function()
+	local shiftPressed = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
+	local uiE = quoteLength.short
+
+	if shiftPressed then
+		local find = table.find(quoteLengths, {
+			value = "short",
+			uiElement = uiE
+		}, 1)
+		if find then
+			table.remove(quoteLengths, find)
+			fadeColor(uiE, Color3.fromHex("#535553"))
+		else
+			table.insert(quoteLengths, {
+				value = "short",
+				uiElement = uiE
+			})
+			fadeColor(uiE, Color3.fromHex("#e2b714"))
+		end
+	else
+		for i, v in quoteLengths do
+			fadeColor(v.uiElement, Color3.fromHex("#535553"))
+		end
+		table.clear(quoteLengths)
+		table.insert(quoteLengths, {
+			value = "short",
+			uiElement = uiE
+		})
+		fadeColor(uiE, Color3.fromHex("#e2b714"))
+	end
+end)
+
+quoteLength.medium.MouseButton1Click:Connect(function()
+	local shiftPressed = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
+	local uiE = quoteLength.medium
+
+	if shiftPressed then
+		local find = table.find(quoteLengths, {
+			value = "medium",
+			uiElement = uiE
+		}, 1)
+		if find then
+			table.remove(quoteLengths, find)
+			fadeColor(uiE, Color3.fromHex("#535553"))
+		else
+			table.insert(quoteLengths, {
+				value = "medium",
+				uiElement = uiE
+			})
+			fadeColor(uiE, Color3.fromHex("#e2b714"))
+		end
+	else
+		for i, v in quoteLengths do
+			fadeColor(v.uiElement, Color3.fromHex("#535553"))
+		end
+		table.clear(quoteLengths)
+		table.insert(quoteLengths, {
+			value = "medium",
+			uiElement = uiE
+		})
+		fadeColor(uiE, Color3.fromHex("#e2b714"))
+	end
+end)
+
+quoteLength.long.MouseButton1Click:Connect(function()
+	local shiftPressed = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
+	local uiE = quoteLength.long
+
+	if shiftPressed then
+		local find = table.find(quoteLengths, {
+			value = "long",
+			uiElement = uiE
+		}, 1)
+		if find then
+			table.remove(quoteLengths, find)
+			fadeColor(uiE, Color3.fromHex("#535553"))
+		else
+			table.insert(quoteLengths, {
+				value = "long",
+				uiElement = uiE
+			})
+			fadeColor(uiE, Color3.fromHex("#e2b714"))
+		end
+	else
+		for i, v in quoteLengths do
+			fadeColor(v.uiElement, Color3.fromHex("#535553"))
+		end
+		table.clear(quoteLengths)
+		table.insert(quoteLengths, {
+			value = "long",
+			uiElement = uiE
+		})
+		fadeColor(uiE, Color3.fromHex("#e2b714"))
+	end
+end)
+
+quoteLength.thicc.MouseButton1Click:Connect(function()
+	local shiftPressed = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
+	local uiE = quoteLength.thicc
+
+	if shiftPressed then
+		local find = table.find(quoteLengths, {
+			value = "thicc",
+			uiElement = uiE
+		}, 1)
+		if find then
+			table.remove(quoteLengths, find)
+			fadeColor(uiE, Color3.fromHex("#535553"))
+		else
+			table.insert(quoteLengths, {
+				value = "thicc",
+				uiElement = uiE
+			})
+			fadeColor(uiE, Color3.fromHex("#e2b714"))
+		end
+	else
+		for i, v in quoteLengths do
+			fadeColor(v.uiElement, Color3.fromHex("#535553"))
+		end
+		table.clear(quoteLengths)
+		table.insert(quoteLengths, {
+			value = "thicc",
+			uiElement = uiE
+		})
+		fadeColor(uiE, Color3.fromHex("#e2b714"))
+	end
+end)
+
+for i, v in wordTime:GetChildren() do
+	if v:IsA("TextButton") then
+		v.MouseButton1Click:Connect(function()
+			
+		end)
+	end
+end
