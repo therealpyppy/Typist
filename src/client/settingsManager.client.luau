@@ -9,8 +9,13 @@ local puncAndNum = playerGui:WaitForChild("puncAndNum")
 local quoteLength = playerGui:WaitForChild("quoteLength")
 local wordTime = playerGui:WaitForChild("wordTime")
 
-local currentMode = "time" -- TODO: Store user data to save what mode the user had on start
-local launch = false
+local currentMode = "time"
+-- Defaults
+local punctuation = false
+local numbers = false
+local quoteLengths = {}
+local words = 50
+local time = 60
 
 local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local tweenInfo2 = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
@@ -172,31 +177,31 @@ local function fadeColor(object, color)
 	return tween
 end
 
-local selected = mode.time1 -- TODO: ln 12
+local selected = nil
 
 mode.time1.MouseButton1Click:Connect(function()
-	fadeColor(selected, Color3.fromHex("#535553"))
+	if selected then fadeColor(selected, Color3.fromHex("#535553")) end
 	fadeColor(mode.time1, Color3.fromHex("#e2b714"))
 	selected = mode.time1
 	switchMode("time")
 end)
 
 mode.words.MouseButton1Click:Connect(function()
-	fadeColor(selected, Color3.fromHex("#535553"))
+	if selected then fadeColor(selected, Color3.fromHex("#535553")) end
 	fadeColor(mode.words, Color3.fromHex("#e2b714"))
 	selected = mode.words
 	switchMode("words")
 end)
 
 mode.quote.MouseButton1Click:Connect(function()
-	fadeColor(selected, Color3.fromHex("#535553"))
+	if selected then fadeColor(selected, Color3.fromHex("#535553")) end
 	fadeColor(mode.quote, Color3.fromHex("#e2b714"))
 	selected = mode.quote
 	switchMode("quote")
 end)
 
 mode.zen.MouseButton1Click:Connect(function()
-	fadeColor(selected, Color3.fromHex("#535553"))
+	if selected then fadeColor(selected, Color3.fromHex("#535553")) end
 	fadeColor(mode.zen, Color3.fromHex("#e2b714"))
 	selected = mode.zen
 	switchMode("zen")
