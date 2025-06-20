@@ -4,10 +4,9 @@ PlayerDataHandler:Init()
 local Players = game:GetService("Players")
 local getUserData: RemoteFunction = game:GetService("ReplicatedStorage").getUserData
 
-getUserData.OnServerInvoke(function(player)
+getUserData.OnServerInvoke = function(player)
 	return PlayerDataHandler:Get(player, "Settings")
-end)
-
+end
 
 local function isValid(data)
 	if type(data) == type(0) and string.len(tostring(data)) == 4 then
