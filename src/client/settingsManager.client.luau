@@ -210,16 +210,22 @@ end)
 
 local punctuationToggle = false
 puncAndNum.punctuation.MouseButton1Click:Connect(function()
-	
+    if punctuationToggle then
+        fadeColor(puncAndNum.punctuation, Color3.fromHex("#535553"))
+    else
+	    fadeColor(puncAndNum.punctuation, Color3.fromHex("#e2b714"))
+    end
+	punctuationToggle = not punctuationToggle
 end)
 
 local numbersToggle = false
 puncAndNum.numbers.MouseButton1Click:Connect(function()
-	
-end)
-
-quoteLength.all.MouseButton1Click:Connect(function()
-	
+    if numbersToggle then
+        fadeColor(puncAndNum.numbers, Color3.fromHex("#535553"))
+    else
+	    fadeColor(puncAndNum.numbers, Color3.fromHex("#e2b714"))
+    end
+	numbersToggle = not numbersToggle
 end)
 
 local function find(tbl: table, field: string, value: string | TextButton)
@@ -230,6 +236,18 @@ local function find(tbl: table, field: string, value: string | TextButton)
 	end
 	return nil
 end
+
+quoteLength.all.MouseButton1Click:Connect(function()
+	table.clear(quoteLengths)
+
+	for _, option in {quoteLength.short, quoteLength.medium, quoteLength.long, quoteLength.thicc} do
+		table.insert(quoteLengths, {
+			value = option.Name,
+			uiElement = option
+		})
+		fadeColor(option, Color3.fromHex("#e2b714"))
+	end
+end)
 
 quoteLength.short.MouseButton1Click:Connect(function()
 	local shiftPressed = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
