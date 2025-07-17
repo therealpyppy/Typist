@@ -365,10 +365,27 @@ quoteLength.thicc.MouseButton1Click:Connect(function()
 	end
 end)
 
-for i, v in wordTime:GetChildren() do
+local selectedTime = nil
+local selectedWord = nil
+
+for _, v in wordTime:GetChildren() do
 	if v:IsA("TextButton") then
-		v.MouseButton1Click:Connect(function()
-			
-		end)
+		if v.Name:sub(1, 4) == "time" then
+			v.MouseButton1Click:Connect(function()
+				if selectedTime then
+					fadeColor(selectedTime, Color3.fromHex("#535553"))
+				end
+				fadeColor(v, Color3.fromHex("#e2b714"))
+				selectedTime = v
+			end)
+		elseif v.Name:sub(1, 4) == "word" then
+			v.MouseButton1Click:Connect(function()
+				if selectedWord then
+					fadeColor(selectedWord, Color3.fromHex("#535553"))
+				end
+				fadeColor(v, Color3.fromHex("#e2b714"))
+				selectedWord = v
+			end)
+		end
 	end
 end
