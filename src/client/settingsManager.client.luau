@@ -208,24 +208,22 @@ mode.zen.MouseButton1Click:Connect(function()
 	switchMode("zen")
 end)
 
-local punctuationToggle = false
 puncAndNum.punctuation.MouseButton1Click:Connect(function()
-    if punctuationToggle then
+    if punctuation then
         fadeColor(puncAndNum.punctuation, Color3.fromHex("#535553"))
     else
 	    fadeColor(puncAndNum.punctuation, Color3.fromHex("#e2b714"))
     end
-	punctuationToggle = not punctuationToggle
+	punctuation = not punctuation
 end)
 
-local numbersToggle = false
 puncAndNum.numbers.MouseButton1Click:Connect(function()
-    if numbersToggle then
+    if numbers then
         fadeColor(puncAndNum.numbers, Color3.fromHex("#535553"))
     else
 	    fadeColor(puncAndNum.numbers, Color3.fromHex("#e2b714"))
     end
-	numbersToggle = not numbersToggle
+	numbers = not numbers
 end)
 
 local function find(tbl: table, field: string, value: string | TextButton)
@@ -377,6 +375,7 @@ for _, v in wordTime:GetChildren() do
 				end
 				fadeColor(v, Color3.fromHex("#e2b714"))
 				selectedTime = v
+                time = tonumber(v.Text)
 			end)
 		elseif v.Name:sub(1, 4) == "word" then
 			v.MouseButton1Click:Connect(function()
@@ -385,6 +384,7 @@ for _, v in wordTime:GetChildren() do
 				end
 				fadeColor(v, Color3.fromHex("#e2b714"))
 				selectedWord = v
+                words = tonumber(v.Text)
 			end)
 		end
 	end
